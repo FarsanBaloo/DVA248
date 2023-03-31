@@ -1,11 +1,15 @@
 import time
-import threading as thread
+import threading
 
 
-def myMoon(argument):
-    while True:
+def myMoon(argument, lock):
+    lock.acquire()
+    i = 0
+    while i < 10:
         print(argument)
         time.sleep(0.2)
+        i += 1
+    lock.release()
 
 
 def main():
