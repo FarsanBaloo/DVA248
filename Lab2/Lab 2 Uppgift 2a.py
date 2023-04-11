@@ -7,8 +7,8 @@ def Philosopher(i, gafflar, Used):
     while True:
         time.sleep(0.1)  # Thinking
 
-        while Used[i] and Used[(i+1)%5]:
-            time.sleep(1)
+        while Used[(i+1)%5]:
+            time.sleep(0.2)
             print("------waiting-------"*5)
 
         gafflar[i].acquire()
