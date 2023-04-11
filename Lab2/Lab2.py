@@ -5,27 +5,28 @@ import time
 buffer = [None,None,None,None,None]
 bufferIndex=0
 
-#The individual number of the item 
+# The individual number of the item
 productItemNo=0
 
 
 # Producer Thread 
-def producer(no:int):
+def producer(no:int, sema):
     global productItemNo
     item=0
     print("Producer "+str(no)+" created!")
     while(True):
         # sleep for a little bit of time 
         time.sleep(0.1)
-        
-        
-        #Obtain a number of the new item to produce
+
+        # Obtain a number of the new item to produce
         item = productItemNo
         productItemNo+=1
 
-        #Produce the item to the buffer
+        # Produce the item to the buffer
+        sema = threading.BoundedSemaphore(5 - bufferIndex)
+        sema.acquire()
         ret=insert_item(item)
-
+        sema.release()
         if(ret):
             print("producer "+str(no)+" produced "+str(item)+"\n")
             
@@ -34,16 +35,20 @@ def producer(no:int):
         
 
 # Consumer Thread 
-def consumer(no:int) :
-    item=0
+def consumer(no:int, sema):
+    item = 0
     print("Consumer "+str(no)+" created!")
     while(True):
         # sleep for little bit of time 
         time.sleep(0.1)
-        
-        #Consume one item from the buffer, ret (True False), item (itemnumber)
+
+        # Consume one item from the buffer, ret (True False), item (itemnumber)
+        sema = threading.BoundedSemaphore(6 - bufferIndex)
+        if bufferIndex < 1:
+            continue
+        sema.acquire()
         ret,item=remove_item()
-        
+        sema.release()
         if(ret):
             print("consumer "+str(no)+" consumed " + str(item)+"\n") 
         else:
@@ -63,11 +68,13 @@ def insert_item(item:int):
     else: # Error the buffer is full
         return False
 
+
 # Remove an item from the buffer */
 def remove_item():
     global bufferIndex
     # When the buffer is not empty remove the item
-    # and decrement the bufferIndex 
+    # and decrement the bufferIndex
+
     if(bufferIndex > 0):
         item = buffer[(bufferIndex-1)]
         bufferIndex-=1
@@ -76,7 +83,26 @@ def remove_item():
         return False,None
 
 
-def main(): 
+def thread_prod(numProd, sema):
+    for prod in range(numProd):
+            # Create the producer threads
+            threading.Thread(target=producer, args=(prod, sema), daemon=True).start()
+            # Add code to start numProd producer() thread(s)
+
+
+def thread_cons(numCons, sema):
+    for cons in range(numCons):
+            # Create the consumer threads */
+            threading.Thread(target=consumer, args=(cons, sema), daemon=True).start()
+            # Add code to start numCons consumer() thread(s)
+
+
+def dummy(sema):
+    if sema._value == 0:
+        print("Slut på sema")
+
+
+def main():
     # THESE SHOULD BE CHANGED ACCORDING TO THE LAB SPECIFICATION   
     numProd = 10 #Number of producer threads
     numCons = 300 #Number of consumer threads
@@ -89,6 +115,7 @@ def main():
 
     # Let the program run for 10 seconds
     time.sleep(10)
+
 
 if __name__== "__main__":
     main()
