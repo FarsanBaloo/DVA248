@@ -78,17 +78,16 @@ def remove_item():
 
 def main(): 
     # THESE SHOULD BE CHANGED ACCORDING TO THE LAB SPECIFICATION   
-    numProd = 1 #Number of producer threads 
-    numCons = 1 #Number of consumer threads 
+    numProd = 10 #Number of producer threads
+    numCons = 300 #Number of consumer threads
 
-    #Create the producer threads 
-    #Add code to start numProd producer() thread(s)
-        
+    # lock = threading.Lock()
+    sema = threading.BoundedSemaphore(5)
+    t1 = threading.Thread(target=thread_prod, args=(numProd, sema), daemon=True)
+    t2 = threading.Thread(target=thread_cons, args=(numCons, sema), daemon=True)
+    t1.start(), t2.start()
 
-    #Create the consumer threads */
-    #Add code to start numCons consumer() thread(s)
-
-    #Let the program run for 10 seconds    
+    # Let the program run for 10 seconds
     time.sleep(10)
 
 if __name__== "__main__":
