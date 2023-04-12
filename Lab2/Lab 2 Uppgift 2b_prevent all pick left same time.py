@@ -38,11 +38,11 @@ def phi(numPhi,gafflar):
 
 def main():
     numPhi = 5
-    gaffel1 = threading.Semaphore(1)
-    gaffel2 = threading.Semaphore(1)
-    gaffel3 = threading.Semaphore(1)
-    gaffel4 = threading.Semaphore(1)
-    gaffel5 = threading.Semaphore(1)
+    gaffel1 = threading.Semaphore()
+    gaffel2 = threading.Semaphore()
+    gaffel3 = threading.Semaphore()
+    gaffel4 = threading.Semaphore()
+    gaffel5 = threading.Semaphore()
     gafflar = [gaffel1, gaffel2, gaffel3, gaffel4, gaffel5]
 
     t1 = threading.Thread(target=phi, args=(numPhi, gafflar), daemon=True)

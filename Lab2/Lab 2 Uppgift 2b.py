@@ -35,8 +35,7 @@ def phi(numPhi, sema):
 def main():
     numPhi = 6
     sema = threading.Semaphore(5)  # Gafflar?
-    t1 = threading.Thread(target=phi, args=(numPhi, sema), daemon=True)
-    t1.start()
+    threading.Thread(target=phi, args=(numPhi, sema), daemon=True).start()
 
     time.sleep(60)
 
