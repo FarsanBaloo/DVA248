@@ -33,11 +33,6 @@ def Philosopher(i, gafflar):
         print(f"Philsoph {i+1} har ättit klart & har lagt ner gafflarna!.")
 
 
-def phi(numPhi,gafflar):
-    for prod in range(numPhi):
-        threading.Thread(target=Philosopher, args=(prod, gafflar), daemon=True).start()
-
-
 def main():
     numPhi = 5
     gaffel1 = threading.Semaphore()
@@ -47,8 +42,8 @@ def main():
     gaffel5 = threading.Semaphore()
     gafflar = [gaffel1, gaffel2, gaffel3, gaffel4, gaffel5]
 
-    t1 = threading.Thread(target=phi, args=(numPhi, gafflar), daemon=True)
-    t1.start()
+    for prod in range(numPhi):
+        threading.Thread(target=Philosopher, args=(prod, gafflar), daemon=True).start()
 
     time.sleep(60)
 

@@ -26,6 +26,7 @@ def producer(no:int, prod_sema, cons_sema, Lock):
         prod_sema.acquire()
         ret=insert_item(item, Lock)
         cons_sema.release()
+
         if(ret):
             print("producer "+str(no)+" produced "+str(item)+"\n")
             
