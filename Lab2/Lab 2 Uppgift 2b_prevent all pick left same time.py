@@ -4,7 +4,7 @@ import threading
 
 def Philosopher(i, gafflar):
     while True:
-        print("Philosoph ", i + 1, " tänker.\n")
+        print(f"Philosoph {i + 1} tänker. \n")
         time.sleep(1)  # Philosoph tänker
 
         # Försök förhindra backlås där alla filosofers sitter och väntar på sin andra gaffel samtidigt
@@ -12,23 +12,23 @@ def Philosopher(i, gafflar):
         if i % 2 == 0:
             gafflar[i].acquire()                             # Tar Vänster gaffel
             if not gafflar[(i + 1) % 5].acquire(timeout=1):  # Försök ta höger gaffel annars släpp vänster gaffel
-                print("Philosoph ", i + 1, " har inte fått höger gaffel så släpper den vänstra gaffeln.\n")
+                print(f"Philosoph {i + 1} har inte fått höger gaffel så släpper den vänstra gaffeln.\n")
                 gafflar[i].release()                         # Släpp vänster gaffel
 
         # Udda placering av philosph tar höger först sedan vänster & släpper höger gaffel om inte får vänster gaffel
         if i % 2 == 1:
             gafflar[(i + 1) % 5].acquire()                  # Ta höger gaffel
             if not gafflar[i].acquire(timeout=1):           # Försök att ta vänster gaffel annars släpp höger gaffel
-                print("Philosoph ", i + 1, " har inte fått vänster gaffel så släpper den högra gaffeln.\n")
+                print(f"Philosoph {i + 1} har inte fått vänster gaffel så släpper den högra gaffeln.\n")
                 gafflar[i + 1].release()                    # Släpp höger gaffel
 
-        print("Philosoph ", i + 1, " börjar Ätta.\n")
+        print(f"Philosoph {i + 1} börjar Ätta. \n")
         time.sleep(3)  # ätter
 
         # Ättit klart Lägger ner båda gafflarna
         gafflar[i].release()
         gafflar[(i+1) % 5].release()
-        print("\nPhilsoph ", i+1, " har ättit klart & har lagt ner gafflarna!.")
+        print(f"Philsoph {i+1} har ättit klart & har lagt ner gafflarna!.")
 
 
 def phi(numPhi,gafflar):
