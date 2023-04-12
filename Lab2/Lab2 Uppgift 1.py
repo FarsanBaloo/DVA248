@@ -100,9 +100,11 @@ def main():
     numCons = 300   # Number of consumer threads
 
     # lock = threading.Lock()
-    sema = threading.BoundedSemaphore(5)
-    t1 = threading.Thread(target=thread_prod, args=(numProd, sema), daemon=True)
-    t2 = threading.Thread(target=thread_cons, args=(numCons, sema), daemon=True)
+    prod_sema = threading.Semaphore(5)
+    cons_sema = threading.Semaphore(0)
+    Lock = threading.Lock()
+    t1 = threading.Thread(target=thread_prod, args=(numProd, prod_sema, cons_sema, Lock), daemon=True)
+    t2 = threading.Thread(target=thread_cons, args=(numCons, prod_sema, cons_sema, Lock), daemon=True)
     t1.start(), t2.start()
 
     # Let the program run for 10 seconds
