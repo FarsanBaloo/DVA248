@@ -5,22 +5,22 @@ import threading
 def Philosopher(i, gafflar):
     while True:
         print(f"Philosoph {i + 1} tänker. \n")
-        time.sleep(1)  # Philosoph tänker
+        time.sleep(0.1)  # Philosoph tänker
 
-        # Försök förhindra backlås där alla filosofers sitter och väntar på sin andra gaffel samtidigt
-        # Jämn placering av philosph tar vänster först sedan höger & släpp vänster gaffel om inte får höger gaffel
+        """Jämn placering av philosph tar vänster först sedan höger & släpp vänster gaffel om inte får höger gaffel"""
         if i % 2 == 0:
-            gafflar[i].acquire()                             # Tar Vänster gaffel
-            if not gafflar[(i + 1) % 5].acquire(timeout=1):  # Försök ta höger gaffel annars släpp vänster gaffel
+            gafflar[i].acquire()                                # Tar Vänster gaffel
+            if not gafflar[(i + 1) % 5].acquire(timeout=1):     # Försök ta höger gaffel annars släpp vänster gaffel
                 print(f"Philosoph {i + 1} har inte fått höger gaffel så släpper den vänstra gaffeln.\n")
-                gafflar[i].release()                         # Släpp vänster gaffel
+                gafflar[i].release()                            # Släpp vänster gaffel
 
-        # Udda placering av philosph tar höger först sedan vänster & släpper höger gaffel om inte får vänster gaffel
+        """Udda placering av philosph tar höger först sedan vänster & släpper höger gaffel om inte får vänster gaffel"""
+
         if i % 2 == 1:
-            gafflar[(i + 1) % 5].acquire()                  # Ta höger gaffel
-            if not gafflar[i].acquire(timeout=1):           # Försök att ta vänster gaffel annars släpp höger gaffel
+            gafflar[(i + 1) % 5].acquire()                      # Ta höger gaffel
+            if not gafflar[i].acquire(timeout=1):               # Försök att ta vänster gaffel annars släpp höger gaffel
                 print(f"Philosoph {i + 1} har inte fått vänster gaffel så släpper den högra gaffeln.\n")
-                gafflar[i + 1].release()                    # Släpp höger gaffel
+                gafflar[i + 1].release()                        # Släpp höger gaffel
 
         print(f"Philosoph {i + 1} börjar Ätta. \n")
         time.sleep(3)  # ätter
