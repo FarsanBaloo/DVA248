@@ -13,6 +13,7 @@ def Philosopher(i, gafflar):
             if not gafflar[(i + 1) % 5].acquire(timeout=1):     # Försök ta höger gaffel annars släpp vänster gaffel
                 print(f"Philosoph {i + 1} har inte fått höger gaffel så släpper den vänstra gaffeln.\n")
                 gafflar[i].release()                            # Släpp vänster gaffel
+                continue
 
         """Udda placering av philosph tar höger först sedan vänster & släpper höger gaffel om inte får vänster gaffel"""
 
@@ -21,6 +22,7 @@ def Philosopher(i, gafflar):
             if not gafflar[i].acquire(timeout=1):               # Försök att ta vänster gaffel annars släpp höger gaffel
                 print(f"Philosoph {i + 1} har inte fått vänster gaffel så släpper den högra gaffeln.\n")
                 gafflar[i + 1].release()                        # Släpp höger gaffel
+                continue
 
         print(f"Philosoph {i + 1} börjar Ätta. \n")
         time.sleep(3)  # ätter

@@ -10,7 +10,7 @@ productItemNo=0
 
 
 # Producer Thread 
-def producer(no:int, sema):
+def producer(no:int, prod_sema, cons_sema, Lock):
     global productItemNo
     item=0
     print("Producer "+str(no)+" created!")
@@ -23,10 +23,9 @@ def producer(no:int, sema):
         productItemNo+=1
 
         # Produce the item to the buffer
-        sema = threading.BoundedSemaphore(5 - bufferIndex)
-        sema.acquire()
-        ret=insert_item(item)
-        sema.release()
+        prod_sema.acquire()
+        ret=insert_item(item, Lock)
+        cons_sema.release()
         if(ret):
             print("producer "+str(no)+" produced "+str(item)+"\n")
             
@@ -35,21 +34,17 @@ def producer(no:int, sema):
         
 
 # Consumer Thread 
-def consumer(no:int, sema):
+def consumer(no:int, prod_sema, cons_sema, Lock):
     item = 0
     print("Consumer "+str(no)+" created!")
     while True:
         # sleep for little bit of time 
         time.sleep(0.1)
-
         # Consume one item from the buffer, ret (True False), item (itemnumber)
-        sema = threading.BoundedSemaphore(6 - bufferIndex)
-        if bufferIndex < 1:
-            time.sleep(1)
-            continue
-        sema.acquire()
-        ret, item = remove_item()
-        sema.release()
+
+        cons_sema.acquire()
+        ret, item = remove_item(Lock)
+        prod_sema.release()
         if(ret):
             print("consumer "+str(no)+" consumed " + str(item)+"\n") 
         else:
@@ -57,44 +52,46 @@ def consumer(no:int, sema):
 
 
 # Add an item to the buffer 
-def insert_item(item:int):
+def insert_item(item:int, Lock):
     global bufferIndex
     #When the buffer is not full add the item
     # and increment the bufferIndex
-    if bufferIndex < 5:
-        buffer[bufferIndex] = item
-        bufferIndex+=1
-        return True
-    
-    else: # Error the buffer is full
-        return False
+    with Lock:
+        if bufferIndex < 5:
+            buffer[bufferIndex] = item
+            bufferIndex+=1
+            return True
+
+        else: # Error the buffer is full
+            return False
 
 
 # Remove an item from the buffer */
-def remove_item():
+def remove_item(Lock):
     global bufferIndex
     # When the buffer is not empty remove the item
     # and decrement the bufferIndex
+    with Lock:
+        if bufferIndex > 0:
+            item = buffer[(bufferIndex-1)]
+            bufferIndex -= 1
+            return True,item
 
-    if bufferIndex > 0:
-        item = buffer[(bufferIndex-1)]
-        bufferIndex -= 1
-        return True,item
-    else: # Error buffer empty 
-        return False,None
+        else: # Error buffer empty
+            return False,None
 
 
-def thread_prod(numProd, sema):
+def thread_prod(numProd, prod_sema, cons_sema, Lock):
     for prod in range(numProd):
         # Create the producer threads
-        threading.Thread(target=producer, args=(prod, sema), daemon=True).start()
+        threading.Thread(target=producer, args=(prod, prod_sema, cons_sema, Lock), daemon=True).start()
         # Add code to start numProd producer() thread(s)
 
 
-def thread_cons(numCons, sema):
+def thread_cons(numCons, prod_sema, cons_sema, Lock):
     """  Create the consumer threads  """
     for cons in range(numCons):
-        threading.Thread(target=consumer, args=(cons, sema), daemon=True).start()
+        threading.Thread(target=consumer, args=(cons, prod_sema, cons_sema, Lock), daemon=True).start()
 
 
 def main():
