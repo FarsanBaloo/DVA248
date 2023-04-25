@@ -66,6 +66,7 @@ def serverRecvPlanet(clientSocket:socket):
     # Note: Function must recreate object from bytestring
     # <Implementation here>
 
+
     small_P = clientSocket.recv(4096)
     bigP = pickle.loads(small_P)
     return bigP
