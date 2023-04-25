@@ -18,6 +18,16 @@ def serverInitSocket (ip='127.0.0.1',port=12345):
     '''
     serverSocket: socket
     #<Implementation here>
+    HOST, PORT = ip, port
+    serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # ???????????????????
+    serverSocket.bind((HOST, PORT))
+
+    # print("Hej!")
+    # try:
+    #     while True:
+    #         conn, addr = soc.accept()
+    #         request = conn.recv(1024).decode()
+    #         # print(request)
 
     return serverSocket 
 
@@ -30,7 +40,9 @@ def serverWaitForNewClient(serverSocket:socket):
     clientSocket:socket
     # Note: All clients can be accepted for this lab since only local communication is allowed.
     #<Implementation here>
-    
+    serverSocket.listen()
+    clientSocket = serverSocket.accept()
+
     return clientSocket
 
 def serverSendString(clientSocket:socket, mess:str):
@@ -40,8 +52,8 @@ def serverSendString(clientSocket:socket, mess:str):
         mess:           the message to transmit
     '''
 #   Note: Function must transform UNICODE strings to byte strings
-    #<Implementation here>
-
+    # <Implementation here>
+    clientSocket.send(pickle.dumps(mess))
     return
 
 def serverRecvPlanet(clientSocket:socket):
@@ -51,13 +63,17 @@ def serverRecvPlanet(clientSocket:socket):
         clientSocket:   the socket to receive from
     Returns the planet object
     '''
-#   Note: Function must recreate object from bytestring
-    #<Implementation here>
-    
-    return
+    # Note: Function must recreate object from bytestring
+    # <Implementation here>
+
+    small_P = clientSocket.recv()
+    bigP = pickle.loads(small_P)
+    return bigP
+
 #########################
 ### CLIENT-SIDE FUNCTIONS
 #########################
+
 
 def clientInitSocket (ip='127.0.0.1',port=12345):
     '''
@@ -67,9 +83,13 @@ def clientInitSocket (ip='127.0.0.1',port=12345):
     Returns a client socket to communicate with the server over
     '''
     clientSocket:socket
-    #<Implementation here>
+    # <Implementation here>
+    HOST, PORT = ip, port
+    clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # ???????????????????
+    clientSocket.connect((HOST, PORT))
     
     return clientSocket
+
 
 def clientRecvString(clientSocket:socket):
     '''
@@ -86,6 +106,7 @@ def clientRecvString(clientSocket:socket):
     # bigP = pickle.loads(small_P)
     
     return message
+
 
 def clientSendPlanet(clientSocket:socket, p:object):
     '''

@@ -20,9 +20,9 @@ SPACEY=600
 
 
 
-#class that manages the planet list, it also contains a method for calculating a new position for a planet given all the other.
-#DT is the delta-time that specify the increment in time for planet updates. No need to change this.
-############## NOTE!!!!! THIS CLASS IS NOT THREAD SAFE AND NEEDS TO BE PROTECTED USING SOME FORM OF MUTEXES
+# Class that manages the planet list, it also contains a method for calculating a new position for a planet given all the other.
+# DT is the delta-time that specify the increment in time for planet updates. No need to change this.
+# ############# NOTE!!!!! THIS CLASS IS NOT THREAD SAFE AND NEEDS TO BE PROTECTED USING SOME FORM OF MUTEXES
 class universe:
     '''
     Class that manages the list of planets in the universe. In the lab you will need to extend this class with your own methods to manage the planets.
@@ -98,6 +98,11 @@ def main():
     s=space(SPACEX,SPACEY)
 
     # USER CODE GOES HERE....
+
+    serverSocket = serverInitSocket()
+    clientSocket = serverWaitForNewClient(serverSocket)
+    p = serverRecvPlanet(clientSocket)
+
 
     painter=threading.Thread(target=randpaint, args=(s,), daemon=True)
     painter.start()
