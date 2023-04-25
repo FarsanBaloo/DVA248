@@ -41,7 +41,7 @@ def serverWaitForNewClient(serverSocket:socket):
     # Note: All clients can be accepted for this lab since only local communication is allowed.
     #<Implementation here>
     serverSocket.listen()
-    clientSocket = serverSocket.accept()
+    clientSocket, adress = serverSocket.accept()
 
     return clientSocket
 
@@ -66,7 +66,7 @@ def serverRecvPlanet(clientSocket:socket):
     # Note: Function must recreate object from bytestring
     # <Implementation here>
 
-    small_P = clientSocket.recv()
+    small_P = clientSocket.recv(4096)
     bigP = pickle.loads(small_P)
     return bigP
 
