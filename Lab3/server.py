@@ -102,9 +102,8 @@ def main():
     serverSocket = serverInitSocket()
     clientSocket = serverWaitForNewClient(serverSocket)
     p = serverRecvPlanet(clientSocket)
+
     print(f"The big planet is: {p.name, p.sx, p.sy,p.vx, p.vy, p.mass, p.life}")
-
-
 
     painter=threading.Thread(target=randpaint, args=(s,), daemon=True)
     painter.start()
