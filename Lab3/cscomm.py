@@ -79,6 +79,11 @@ def clientRecvString(clientSocket:socket):
     '''
     message:str
     #<Implementation here>
+
+    message = pickle.loads(clientSocket.recv())
+
+    # small_P = clientSocket.recv()
+    # bigP = pickle.loads(small_P)
     
     return message
 
@@ -89,6 +94,9 @@ def clientSendPlanet(clientSocket:socket, p:object):
         p:              the planet object to transmit'''
 #   Note: Function must transform object into bytestring
     #<Implementation here>
+
+    clientSocket.send(pickle.dumps(p))
+    # bigP = pickle.loads(small_P)
 
     return
 
