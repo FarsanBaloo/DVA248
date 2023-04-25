@@ -34,12 +34,16 @@ class universe:
 
     
     def __init__(self, dt=10):
-        '''Constructs a universe (i.e. a list of planets), delta time is set to 10 by default which you probably dont need to change. '''
+        '''Constructs a universe (i.e. a list of planets),
+        delta time is set to 10 by default which you probably dont need to change. '''
         self.planet_list.clear()
         self.DT=dt
 
-    def calculate_planet_pos(self,p:planet):
-        '''Method to  calculate the position of planet p, relative to all other planets in the system. The method updates the position and age of planet p''' 
+    def calculate_planet_pos(self,p:planet,s):
+        '''
+        Method to  calculate the position of planet p, relative to all other planets in the system.
+        The method updates the position and age of planet p
+        '''
         Atotx = 0.0
         Atoty = 0.0
         x = 0.0
@@ -49,7 +53,7 @@ class universe:
         ax = 0.0
         ay = 0.0
         
-        G = 6.67259 * pow(10, -11) #Declaration of the gravitational constant
+        G = 6.67259 * pow(10, -11) # Declaration of the gravitational constant
         
         cur:planet
         for cur in self.planet_list:
@@ -65,17 +69,20 @@ class universe:
                 Atotx += ax
                 Atoty += ay
     
-        p.vx = p.vx + (Atotx * self.DT) #Update planet velocity, acceleration and life
+        p.vx = p.vx + (Atotx * self.DT) # Update planet velocity, acceleration and life
         p.vy = p.vy + (Atoty * self.DT)
         p.sx = p.sx + (p.vx * self.DT)
         p.sy = p.sy + (p.vy * self.DT)
         p.life -= 1
+        s.putPlanet(p.vx, p.vy, rad=p.mass)
     
     # Here you need to extend the planets class with your own methods to manage the planets
 
 
 def randpaint(s:space):
-    '''A demonstration function for the lab-package. Prints a randomly moving planet on the canvas. Just demonstrates how to draw, should be removed when lab is implemented.'''
+    '''A demonstration function for the lab-package.
+    Prints a randomly moving planet on the canvas.
+    Just demonstrates how to draw, should be removed when lab is implemented.'''
     x=SPACEX/2
     y=SPACEY/2
     random.seed()
@@ -89,6 +96,23 @@ def randpaint(s:space):
         s.putPlanet(x,y,rad=2,color="red")
         time.sleep(0.01)
 
+def newPlanet(u, p, s):
+    while True:
+        universe.calculate_planet_pos(u, p, s)
+        time.sleep(0.01)
+
+def clientThread(clientSocket, u, s):
+    p = serverRecvPlanet(clientSocket)
+    serverSendString(clientSocket, f"{p.name} recieved! Thanks for your patronage")
+    print(f"The big planet is: {p.name, p.sx, p.sy,p.vx, p.vy, p.mass, p.life}")
+    threading.Thread(target=newPlanet, args=(u, p, s), daemon=True).start()
+
+def serverThread(serverSocket, u, s):
+
+    while True:
+        clientSocket = serverWaitForNewClient(serverSocket)
+        threading.Thread(target=clientThread, args=(clientSocket, u, s), daemon=True).start()
+        time.sleep(0.1)
 
 
 def main():
@@ -96,21 +120,20 @@ def main():
     u=universe()  
     # Create the window on which to draw the universe
     s=space(SPACEX,SPACEY)
+    # threading.Thread(target=loop, args=(s,), daemon=True).start()
 
     # USER CODE GOES HERE....
 
     serverSocket = serverInitSocket()
-    clientSocket = serverWaitForNewClient(serverSocket)
-    p = serverRecvPlanet(clientSocket)
+    threading.Thread(target=serverThread, args=(serverSocket, u, s), daemon=True).start()
 
-    print(f"The big planet is: {p.name, p.sx, p.sy,p.vx, p.vy, p.mass, p.life}")
-
-    painter=threading.Thread(target=randpaint, args=(s,), daemon=True)
-    painter.start()
+    # painter=threading.Thread(target=randpaint, args=(s,), daemon=True)
+    # painter.start()
 
     # Last part of main function is the window management loop, will terminate when window is closed
     s.mainLoop()
 
 if __name__== "__main__":
+
     main()
 

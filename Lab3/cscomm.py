@@ -40,10 +40,11 @@ def serverWaitForNewClient(serverSocket:socket):
     clientSocket:socket
     # Note: All clients can be accepted for this lab since only local communication is allowed.
     #<Implementation here>
-    serverSocket.listen()
-    clientSocket, adress = serverSocket.accept()
+    while True:
+        serverSocket.listen()
+        clientSocket, adress = serverSocket.accept()
 
-    return clientSocket
+        return clientSocket
 
 def serverSendString(clientSocket:socket, mess:str):
     '''
@@ -101,7 +102,8 @@ def clientRecvString(clientSocket:socket):
     message:str
     #<Implementation here>
 
-    message = pickle.loads(clientSocket.recv())
+    message = clientSocket.recv(4069)
+    message = pickle.loads(message)
 
     # small_P = clientSocket.recv()
     # bigP = pickle.loads(small_P)

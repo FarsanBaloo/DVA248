@@ -7,7 +7,9 @@ import socket
 
 class planet:
     '''
-    Class that contains planet objects. The class is shared between server and client, however the methods are only used in the server.
+    Class that contains planet objects.
+    The class is shared between server and client,
+    however the methods are only used in the server.
     
     '''
     name:str
