@@ -8,7 +8,7 @@ from cscomm import clientInitSocket,clientRecvString,clientSendPlanet
 #
 # def starbody(name, x, y, z, b, n, m):
 #     yield planet(name, x, y, z, b, n, m)
-p=planet("Sun",300,300,0,0,10e8,10e8)
+p=planet("Sun",300,300,0,0,10e8,10e8,"orange")
 
 #thep=planet("moon",3,3,0,0,3,3)
 # for p in starbody("Sun", 300, 300, 0, 0, 10e8, 10e8):
