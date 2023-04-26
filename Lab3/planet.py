@@ -21,7 +21,7 @@ class planet:
     life:int
     cSock:socket #ONLY USED BY SERVER
 
-    def __init__(self,name, sx, sy,vx,vy,mass,life,color):
+    def __init__(self,name, sx, sy,vx,vy,mass,life,color,radius):
         self.name=name
         self.sx=sx
         self.sy=sy
@@ -31,6 +31,7 @@ class planet:
         self.life=life
         self.cSock=None
         self.color=color
+        self.radius=radius
 
 
     #ONLY USED BY SERVER, do not send socket from client to server.

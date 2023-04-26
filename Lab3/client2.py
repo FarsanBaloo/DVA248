@@ -3,25 +3,26 @@ import threading
 from planet import planet
 from cscomm import clientInitSocket,clientRecvString,clientSendPlanet
 
-planets = [planet("Sun",300,300,0,0,10e8,10e8,"orange", radius=20),
-           planet("Earth",200,300,0,0.008,1000,10e8,"blue", radius=5),
-           planet("Comet",500,300,0.1,0,1000,10e8,"white", radius=2)]
+#     planet(Name, X-pos, Y-pos, X-velocity, Y-Velocity, Mass, Life, color, radius)
+planets = [planet("Oops",500,400,0,0,10e9,100,"red", radius=10)]
 
 
-def sendPlanets(p,):
+# planet("Moon",210,310,0,0.008,12,100,"gray", radius=2),
+# planet("Oops",500,400,0,0,10e9,100,"red", radius=10),
+# planet("Venus",400,400,0.005,0.012,1200,100,"purple", radius=2)
+
+def sendPlanets(p):
     s = clientInitSocket()
-    clientSendPlanet(s, p)
+    clientSendPlanet(s,p)
     for i in range(2):
         message = clientRecvString(s)
         print("\n", message, "\n")
     s.close
 
-
 while planets:
     p = planets.pop()
     threading.Thread(target=sendPlanets, args=(p,), daemon=True).start()
     time.sleep(0.1)
-
 while True:
     print()
     name = input("Planet Name > ")
@@ -44,3 +45,5 @@ while True:
         p = planets.pop()
         threading.Thread(target=sendPlanets, args=(p,), daemon=True).start()
         time.sleep(0.1)
+
+

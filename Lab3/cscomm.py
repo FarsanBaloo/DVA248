@@ -22,13 +22,6 @@ def serverInitSocket (ip='127.0.0.1',port=12345):
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # ???????????????????
     serverSocket.bind((HOST, PORT))
 
-    # print("Hej!")
-    # try:
-    #     while True:
-    #         conn, addr = soc.accept()
-    #         request = conn.recv(1024).decode()
-    #         # print(request)
-
     return serverSocket 
 
 def serverWaitForNewClient(serverSocket:socket):
@@ -104,9 +97,6 @@ def clientRecvString(clientSocket:socket):
 
     message = clientSocket.recv(4069)
     message = pickle.loads(message)
-
-    # small_P = clientSocket.recv()
-    # bigP = pickle.loads(small_P)
     
     return message
 
@@ -120,7 +110,6 @@ def clientSendPlanet(clientSocket:socket, p:object):
     #<Implementation here>
 
     clientSocket.send(pickle.dumps(p))
-    # bigP = pickle.loads(small_P)
 
     return
 
