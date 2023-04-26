@@ -3,7 +3,7 @@ import threading
 from planet import planet
 from cscomm import clientInitSocket,clientRecvString,clientSendPlanet
 
-#     planet(Name, X-pos, Y-pos, X-velocity, Y-Velocity, Mass, Life, color, radius)
+# planet(Name, X-pos, Y-pos, X-velocity, Y-Velocity, Mass, Life, color, radius)
 planets = [planet("Oops",500,400,0,0,10e9,100,"red", radius=10)]
 
 
@@ -18,6 +18,7 @@ def sendPlanets(p):
         message = clientRecvString(s)
         print("\n", message, "\n")
     s.close
+
 
 while planets:
     p = planets.pop()
@@ -40,10 +41,5 @@ while True:
     except ValueError:
         print("Try with numbers.")
         continue
-    planets.append(planet(name, X, Y, X_vel/1000, Y_vel/1000, mass, life, color, radius))
-    while planets:
-        p = planets.pop()
-        threading.Thread(target=sendPlanets, args=(p,), daemon=True).start()
-        time.sleep(0.1)
-
-
+    p = planet(name, X, Y, X_vel/1000, Y_vel/1000, mass, life, color, radius)
+    threading.Thread(target=sendPlanets, args=(p,), daemon=True).start()

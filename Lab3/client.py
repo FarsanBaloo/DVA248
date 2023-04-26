@@ -39,8 +39,5 @@ while True:
     except ValueError:
         print("Try with numbers.")
         continue
-    planets.append(planet(name, X, Y, X_vel/1000, Y_vel/1000, mass, life, color, radius))
-    while planets:
-        p = planets.pop()
-        threading.Thread(target=sendPlanets, args=(p,), daemon=True).start()
-        time.sleep(0.1)
+    p = planet(name, X, Y, X_vel/1000, Y_vel/1000, mass, life, color, radius)
+    threading.Thread(target=sendPlanets, args=(p,), daemon=True).start()

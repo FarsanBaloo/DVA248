@@ -60,7 +60,6 @@ def serverRecvPlanet(clientSocket:socket):
     # Note: Function must recreate object from bytestring
     # <Implementation here>
 
-
     small_P = clientSocket.recv(4096)
     bigP = pickle.loads(small_P)
     return bigP
@@ -80,7 +79,7 @@ def clientInitSocket (ip='127.0.0.1',port=12345):
     clientSocket:socket
     # <Implementation here>
     HOST, PORT = ip, port
-    clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # ???????????????????
+    clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     clientSocket.connect((HOST, PORT))
     
     return clientSocket

@@ -67,11 +67,7 @@ class universe:
                 Atotx += ax
                 Atoty += ay
                 handcuffs.release()
-                if cur.life == 0:
-                    print(cur.name, "is old! Doom befalls us all!")
-                    self.planet_list.pop(i)
-                if self.isOutofBonds(cur):
-                    print(cur.name, "is gone! Doom befalls us all!")
+                if cur.life == 0 or self.isOutofBonds(cur):
                     self.planet_list.pop(i)
 
         handcuffs.acquire()
