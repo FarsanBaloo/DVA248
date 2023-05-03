@@ -33,11 +33,11 @@ def serverWaitForNewClient(serverSocket:socket):
     clientSocket:socket
     # Note: All clients can be accepted for this lab since only local communication is allowed.
     #<Implementation here>
-    while True:
-        serverSocket.listen()
-        clientSocket, adress = serverSocket.accept()
 
-        return clientSocket
+    serverSocket.listen()
+    clientSocket, adress = serverSocket.accept()
+
+    return clientSocket
 
 def serverSendString(clientSocket:socket, mess:str):
     '''
