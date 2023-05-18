@@ -67,8 +67,8 @@ class universe:
                 Atotx += ax
                 Atoty += ay
                 handcuffs.release()
-                if cur.life == 0 or self.isOutofBonds(cur):
-                    self.planet_list.pop(i)
+             #   if cur.life == 0 or self.isOutofBonds(cur):
+             #       self.planet_list.pop(i)
 
         handcuffs.acquire()
         p.vx = p.vx + (Atotx * self.DT) # Update planet velocity, acceleration and life
@@ -79,6 +79,12 @@ class universe:
         s.putPlanet(p.sx, p.sy, rad=p.radius, color=p.color)
         p.life -= 1
 
+        # Moved check outside itheration for calculation of planet to prevent unindentified problems.  /RiSo 230518
+        if p.life == 0 or self.isOutofBonds(p):
+            handcuffs.acquire()
+            self.planet_list.remove(p)
+            handcuffs.release()
+    
     def isOutofBonds(self, p):
         if p.sx > SPACEX or p.sx < 0:
             return True
@@ -102,10 +108,12 @@ def newPlanet(clientSocket, u, p, s, handcuffs):
 
 
 def clientThread(clientSocket, u, s, handcuffs):
-    p = serverRecvPlanet(clientSocket)
-    serverSendString(clientSocket, f"{p.name} recieved! Thanks for your patronage")
-    # print(f"The big planet is: {p.name, p.sx, p.sy,p.vx, p.vy, p.mass, p.life}")
-    threading.Thread(target=newPlanet, args=(clientSocket, u, p, s, handcuffs), daemon=True).start()
+    # Added while as client should manage to handle more planet then one /Riso 230516
+    while True:
+        p = serverRecvPlanet(clientSocket)
+        serverSendString(clientSocket, f"{p.name} recieved! Thanks for your patronage")
+        # print(f"The big planet is: {p.name, p.sx, p.sy,p.vx, p.vy, p.mass, p.life}")
+        threading.Thread(target=newPlanet, args=(clientSocket, u, p, s, handcuffs), daemon=True).start()
 
 
 def serverThread(serverSocket, u, s, handcuffs):
