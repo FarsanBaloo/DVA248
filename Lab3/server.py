@@ -67,8 +67,8 @@ class universe:
                 Atotx += ax
                 Atoty += ay
                 handcuffs.release()
-               # if cur.life == 0 or self.isOutofBonds(cur):
-               #     self.planet_list.pop(i)
+             #   if cur.life == 0 or self.isOutofBonds(cur):
+             #       self.planet_list.pop(i)
 
         handcuffs.acquire()
         p.vx = p.vx + (Atotx * self.DT) # Update planet velocity, acceleration and life
@@ -84,7 +84,7 @@ class universe:
             handcuffs.acquire()
             self.planet_list.remove(p)
             handcuffs.release()
-
+    
     def isOutofBonds(self, p):
         if p.sx > SPACEX or p.sx < 0:
             return True
@@ -94,8 +94,6 @@ class universe:
 
     
     # Here you need to extend the planets class with your own methods to manage the planets
-
-
 
 
 def newPlanet(clientSocket, u, p, s, handcuffs):
