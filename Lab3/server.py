@@ -109,13 +109,13 @@ def newPlanet(clientSocket, u, p, s, handcuffs):
         serverSendString(clientSocket, f"{p.name} escaped the known universe!! Coward! ")
 
 
-
-
 def clientThread(clientSocket, u, s, handcuffs):
-    p = serverRecvPlanet(clientSocket)
-    serverSendString(clientSocket, f"{p.name} recieved! Thanks for your patronage")
-    # print(f"The big planet is: {p.name, p.sx, p.sy,p.vx, p.vy, p.mass, p.life}")
-    threading.Thread(target=newPlanet, args=(clientSocket, u, p, s, handcuffs), daemon=True).start()
+    # Added while as client should manage to handle more planet then one /Riso 230516
+    while True:
+        p = serverRecvPlanet(clientSocket)
+        serverSendString(clientSocket, f"{p.name} recieved! Thanks for your patronage")
+        # print(f"The big planet is: {p.name, p.sx, p.sy,p.vx, p.vy, p.mass, p.life}")
+        threading.Thread(target=newPlanet, args=(clientSocket, u, p, s, handcuffs), daemon=True).start()
 
 
 def serverThread(serverSocket, u, s, handcuffs):
