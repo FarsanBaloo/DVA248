@@ -67,8 +67,8 @@ class universe:
                 Atotx += ax
                 Atoty += ay
                 handcuffs.release()
-                if cur.life == 0 or self.isOutofBonds(cur):
-                    self.planet_list.pop(i)
+               # if cur.life == 0 or self.isOutofBonds(cur):
+               #     self.planet_list.pop(i)
 
         handcuffs.acquire()
         p.vx = p.vx + (Atotx * self.DT) # Update planet velocity, acceleration and life
@@ -78,6 +78,12 @@ class universe:
         handcuffs.release()
         s.putPlanet(p.sx, p.sy, rad=p.radius, color=p.color)
         p.life -= 1
+
+        # Moved check outside itheration for calculation of planet to prevent unindentified problems.  /RiSo 230518
+        if p.life == 0 or self.isOutofBonds(p):
+            handcuffs.acquire()
+            self.planet_list.remove(p)
+            handcuffs.release()
 
     def isOutofBonds(self, p):
         if p.sx > SPACEX or p.sx < 0:
@@ -90,6 +96,8 @@ class universe:
     # Here you need to extend the planets class with your own methods to manage the planets
 
 
+
+
 def newPlanet(clientSocket, u, p, s, handcuffs):
     u.planet_list.append(p)
     while p in u.planet_list:
@@ -99,6 +107,8 @@ def newPlanet(clientSocket, u, p, s, handcuffs):
         serverSendString(clientSocket, f"{p.name} grew too old and imploded!! Doom befalls us all!")
     if universe.isOutofBonds(u, p):
         serverSendString(clientSocket, f"{p.name} escaped the known universe!! Coward! ")
+
+
 
 
 def clientThread(clientSocket, u, s, handcuffs):
