@@ -66,14 +66,17 @@ class universe:
                 ax = a * (x / r)
                 Atotx += ax
                 Atoty += ay
-                if cur.life == 0 or self.isOutofBonds(cur):
-                    self.planet_list.pop(i)
+
 
         p.vx = p.vx + (Atotx * self.DT) # Update planet velocity, acceleration and life
         p.vy = p.vy + (Atoty * self.DT)
         p.sx = p.sx + (p.vx * self.DT)
         p.sy = p.sy + (p.vy * self.DT)
         p.life -= 1
+
+        # Moved check outside itheration for calculation of planet to prevent unindentified problems.  /RiSo 230518
+        if p.life == 0 or self.isOutofBonds(p):
+            self.planet_list.remove(p)
         handcuffs.release()
 
     def isOutofBonds(self, p):
@@ -83,7 +86,6 @@ class universe:
             return True
         return False
 
-    
     # Here you need to extend the planets class with your own methods to manage the planets
 
 
@@ -99,18 +101,17 @@ def newPlanet(clientSocket, u, p, s, handcuffs):
         serverSendString(clientSocket, f"{p.name} escaped the known universe!! Coward! ")
 
 
-def clientThread(clientSocket, u, s, handcuffs):
-
+def RcvPlanet(clientSocket, u, s, handcuffs):
     p = serverRecvPlanet(clientSocket)
     serverSendString(clientSocket, f"{p.name} recieved! Thanks for your patronage")
     threading.Thread(target=newPlanet, args=(clientSocket, u, p, s, handcuffs), daemon=True).start()
 
 
-def serverThread(serverSocket, u, s, handcuffs):
+def ClientThread(serverSocket, u, s, handcuffs):
 
     while True:
         clientSocket = serverWaitForNewClient(serverSocket)
-        threading.Thread(target=clientThread, args=(clientSocket, u, s, handcuffs), daemon=True).start()
+        threading.Thread(target=RcvPlanet, args=(clientSocket, u, s, handcuffs), daemon=True).start()
         time.sleep(0.1)
 
 
@@ -132,7 +133,7 @@ def main():
     # USER CODE GOES HERE....
     handcuffs = threading.Lock()
     serverSocket = serverInitSocket()
-    threading.Thread(target=serverThread, args=(serverSocket, u, s, handcuffs), daemon=True).start()
+    threading.Thread(target=ClientThread, args=(serverSocket, u, s, handcuffs), daemon=True).start()
     threading.Thread(target=randpaint, args=(s, u, handcuffs), daemon=True).start()
 
     # Last part of main function is the window management loop, will terminate when window is closed
@@ -141,4 +142,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

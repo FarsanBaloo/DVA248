@@ -14,7 +14,7 @@ def sendPlanets(p,):
     for i in range(2):
         message = clientRecvString(s)
         print("\n", message, "\n")
-    s.close
+    s.close()
 
 
 while planets:
